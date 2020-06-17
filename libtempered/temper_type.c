@@ -15,8 +15,8 @@
 struct temper_type known_temper_types[]={
 	{
 		.name="TEMPer2HumiV1.x",
-		.vendor_id=0x0c45,
-		.product_id=0x7402,
+		.vendor_id=0x413d,
+		.product_id=0x2107,
 		.interface_number=0
 	},
 	{

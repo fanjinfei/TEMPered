@@ -53,6 +53,8 @@ int read_from_device( hid_device *dev, int timeout )
 			);
 		}
 		dump_data( "Response from device", read_data, size );
+                float x = read_data[2]*256.0f + read_data[3];
+                printf("temp %.2fC\n", x/100.0f);
 	}
 	return 0;
 }
