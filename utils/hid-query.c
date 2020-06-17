@@ -137,8 +137,10 @@ int query_device_by_path(
 			if ( strcmp( info->path, device_path ) == 0 )
 			{
 				// found it
+                            while(1) {
 				ret = query_device( info, write_data, write_length );
-				break;
+                                sleep(5);
+			    }	break;
 			}
 		}
 		if ( ret == 4 )
