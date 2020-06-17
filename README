@@ -52,3 +52,30 @@ versions - 2.8 is what my system has, so I haven't tested anything older.
 
 HACK: temper1f v3.2 413d:2107
 utils/hid-query /dev/hidraw2 0x01 0x80 0x33 0x01 0x00 0x00 0x00 0x00 (raw1/2)
+
+------------------------
+After a few hours I managed to hack a way to read the temperatures.. it's ugly, but it works and gives identical readings to the "TXT" feature controlled by caps lock and num lock.
+
+Initially running TEMPERed gave the error "Failed to enumerate devices: (null)". lsusb shows the device has ID 413d:2107, so I opened temper_type.c and tried changing the vendor and product id for the "TEMPerV1.2 or TEMPer2V1.3" section from 0c45:7401 to 413d:2107 to see what would happen.
+
+Then I got the error "/dev/hidraw1: Could not open device: Unknown device subtype ID: 0x04". I added a new subtype block with id = 4, based on the id = 2 section. That got TEMPered to recognize and talk to the device, however the two temperatures shown when running the "tempered" command are incorrect.
+
+"hid-query /dev/hidraw1 0x01 0x86 0xff 0x01 0x00 0x00 0x00 0x00" returns hex values for the string:
+"TEMPerX_V3.2 "
+
+Similar to what was noted in the description of a different device, a single query results in two responses:
+
+"hid-query /dev/hidraw1 0x01 0x80 0x33 0x01 0x00 0x00 0x00 0x00" returns::
+Response from device (8 bytes):
+80 80 09 98 4e 20 00 00
+Response from device (8 bytes):
+80 01 07 c9 4e 20 00 00
+
+Here the internal temperture is represented by "09 98", and the external temperature by "07 c9". Below is the C code to convert these to the actual values in degrees celsius:
+
+unsigned char high_byte = data[2];
+unsigned char high_byte = data[3];
+int temp = (high_byte <<8) + low_byte;
+float tempC = (float)temp / 100.0;
+
+I was unable to devise a simple way to make TEMPer handle the two responses properly under its existing framework, so instead I quickly hacked the hid-query.c utility to decode and display the temperatures on its own.
