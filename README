@@ -51,6 +51,8 @@ This project is using version 2.8, but might be compatible with some earlier
 versions - 2.8 is what my system has, so I haven't tested anything older.
 
 HACK: temper1f v3.2 413d:2107
+
+https://github.com/edorfaus/TEMPered/issues/51
 utils/hid-query /dev/hidraw2 0x01 0x80 0x33 0x01 0x00 0x00 0x00 0x00 (raw1/2)
 
 ------------------------
